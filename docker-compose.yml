@@ -16,6 +16,7 @@ services:
     environment:
       # Project specific env vars for this project:
       - DATABASE_URL=postgis://parkkihubi:parkkihubi@postgresql/parkkihubi
+      - CACHE_URL=pymemcache://memcached:11211
       - HTTPS=off
       - SECRET_KEY=not-empty
       # Service level env vars:

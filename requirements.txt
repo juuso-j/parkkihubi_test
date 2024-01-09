@@ -25,6 +25,8 @@ django-environ==0.4.5
     # via -r requirements.in
 django-filter==2.3.0
     # via -r requirements.in
+django-pylibmc==0.6.1
+    # via -r requirements.in
 django-sanitized-dump==1.2.1
     # via -r requirements.in
 djangorestframework==3.14.0
@@ -54,8 +56,6 @@ pyproj==3.3.0
     #   owslib
 python-dateutil==2.8.1
     # via owslib
-python-memcached==1.59
-    # via -r requirements.in
 pytz==2023.3.post1
     # via
     #   -r requirements.in
