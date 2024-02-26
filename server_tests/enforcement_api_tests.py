@@ -314,7 +314,7 @@ def test_replace_a_permit_in_the_active_series(id):
 
 if __name__ == "__main__":
     # In case of test failure, delete the created permit and parking
-    delete_a_permit(181)
+    # delete_a_permit(181)
     # delete_parking(parking_id)
     parking_id = create_valid_parking()
     test_get_valid_parking_unauthorization()
