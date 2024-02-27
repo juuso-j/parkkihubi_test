@@ -99,6 +99,7 @@ def test_list_of_permits_in_active_series():
 
 def test_create_permit_to_the_active_series(data=DATA):
     response = requests.post(f"{PARKKI_HOST}/operator/v1/activepermit/", headers=HEADERS, json=data)
+    # If assertion fails, check that the permit series configured in 'TEST_PERMIT_SERIES_ID' is Active
     assert response.status_code == 201
     json_data = response.json()
     assert json_data
@@ -153,7 +154,7 @@ def test_delete_a_permit_in_active_series(id):
 if __name__ == "__main__":
     # In case of test failure, delete obsolete permits as it will try to create duplicates
     # test_delete_a_permit_in_active_series(TEST_EXTERNAL_ID)
-    # test_delete_a_permit(183)
+    # test_delete_a_permit(202)
 
     # Test Permits
     test_get_list_of_parking_permits()
