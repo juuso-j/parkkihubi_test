@@ -11,8 +11,7 @@ def test_get_permit_series_list():
 
 
 def test_post_not_active_permit_series():
-    data = {}
-    response = requests.post(f"{PARKKI_HOST}/operator/v1/permitseries/", headers=HEADERS, json=data)
+    response = requests.post(f"{PARKKI_HOST}/operator/v1/permitseries/", headers=HEADERS, json={})
     assert response.status_code == 201
     assert response.json()["active"] is False
     return response.json()["id"]
