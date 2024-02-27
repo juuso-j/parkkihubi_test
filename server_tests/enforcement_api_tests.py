@@ -63,6 +63,11 @@ def create_valid_parking(data=PARKING_DATA):
     return json_data["id"]
 
 
+def activate_a_permit_series(id):
+    response = requests.post(f"{PARKKI_HOST}/enforcement/v1/permitseries/{id}/activate/", headers=HEADERS, data={})
+    assert response.status_code == 200
+
+
 def delete_parking(id):
     response = requests.delete(f"{PARKKI_HOST}/operator/v1/parking/{id}/", headers=HEADERS)
     assert response.status_code == 204
@@ -170,8 +175,7 @@ def test_get_list_of_permit_series():
 
 
 def test_create_a_permit_series_object():
-    data = {}
-    response = requests.post(f"{PARKKI_HOST}/enforcement/v1/permitseries/", headers=HEADERS, json=data)
+    response = requests.post(f"{PARKKI_HOST}/enforcement/v1/permitseries/", headers=HEADERS, json={})
     assert response.status_code == 201
     json_data = response.json()
     assert "created_at" in json_data
@@ -191,8 +195,7 @@ def test_get_details_of_permit_series(id):
 
 
 def test_activate_a_permit_series(id):
-    data = {}
-    response = requests.post(f"{PARKKI_HOST}/enforcement/v1/permitseries/{id}/activate/", headers=HEADERS, data=data)
+    response = requests.post(f"{PARKKI_HOST}/enforcement/v1/permitseries/{id}/activate/", headers=HEADERS, data={})
     assert response.status_code == 200
     assert response.json()["status"] == "OK"
     response = requests.get(f"{PARKKI_HOST}/enforcement/v1/permitseries/{id}/", headers=HEADERS)
@@ -200,7 +203,7 @@ def test_activate_a_permit_series(id):
     json_data = response.json()
     assert json_data["id"] == id
     assert json_data["active"] is True
-    response = requests.post(f"{PARKKI_HOST}/enforcement/v1/permitseries/{id}/activate/", headers=HEADERS, data=data)
+    response = requests.post(f"{PARKKI_HOST}/enforcement/v1/permitseries/{id}/activate/", headers=HEADERS, data={})
     assert response.status_code == 200
     assert response.json()["status"] == "No change"
 
@@ -313,9 +316,14 @@ def test_replace_a_permit_in_the_active_series(id):
 
 
 if __name__ == "__main__":
-    # In case of test failure, delete the created permit and parking
-    # delete_a_permit(181)
+    # In case of test failure, delete data that was created.
+    # If not deleted tests will fail, creates entities that already exists.
+    # delete_a_permit(permit_id )
     # delete_parking(parking_id)
+    # delete_permit_series_object(permit_series_id)
+    # If needed active the permit series used in test, can also be done from the admin.
+    # activate_a_permit_series(TEST_PERMIT_SERIES_ID)
+
     parking_id = create_valid_parking()
     test_get_valid_parking_unauthorization()
     test_get_valid_parkings_no_parameters()
@@ -324,10 +332,11 @@ if __name__ == "__main__":
     test_get_valid_parking_existing()
     permit_id = create_a_permit_object()
     test_get_list_of_valid_permit_items()
+
     first_operator_id = test_list_of_parking_operators()
     test_get_details_of_a_parking_operator(first_operator_id)
-    test_get_list_of_permit_series()
     permit_series_id = test_create_a_permit_series_object()
+    test_get_list_of_permit_series()
     test_get_details_of_permit_series(permit_series_id)
     test_activate_a_permit_series(permit_series_id)
     test_get_list_of_your_parking_permits()
@@ -340,6 +349,7 @@ if __name__ == "__main__":
     active_permit_id = test_create_a_permit_to_the_active_series()
     test_get_list_of_permits_in_the_active_series()
     test_get_details_of_a_permit_in_the_active_series(TEST_EXTERNAL_ID)
+
     test_update_a_permit_in_the_active_series(TEST_EXTERNAL_ID)
     test_replace_a_permit_in_the_active_series(TEST_EXTERNAL_ID)
 
@@ -347,3 +357,6 @@ if __name__ == "__main__":
     delete_a_permit(active_permit_id)
     delete_parking(parking_id)
     delete_permit_series_object(permit_series_id)
+    # As activation of a permit series deactivates all other permit series owned by the user
+    # active the test permit series
+    activate_a_permit_series(TEST_PERMIT_SERIES_ID)
